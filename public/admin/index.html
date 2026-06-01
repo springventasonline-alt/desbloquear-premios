@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desbloquear Premios — Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div>
+        <h1>Desbloquear premios para vender más</h1>
+        <p class="subtitle">Configurá hasta 6 niveles de premios para tu carrito</p>
+      </div>
+      <div class="header-actions">
+        <a href="/auth/install" class="btn btn-primary" id="install-btn">Instalar app</a>
+        <a href="/auth/logout" class="btn btn-ghost" id="logout-btn" hidden>Cerrar sesión</a>
+      </div>
+    </header>
+
+    <main id="login-view" class="card center">
+      <h2>Conectá tu tienda Tiendanube</h2>
+      <p>Instalá la app para configurar la barra de progreso de premios en tu carrito.</p>
+      <a href="/auth/install" class="btn btn-primary btn-lg">Conectar con Tiendanube</a>
+    </main>
+
+    <main id="panel-view" hidden>
+      <section class="grid">
+        <div class="card">
+          <h2>Tu tienda</h2>
+          <dl class="store-info">
+            <dt>Nombre</dt><dd id="store-name">—</dd>
+            <dt>ID Tiendanube</dt><dd id="store-id">—</dd>
+            <dt>Script instalado</dt><dd id="script-status">—</dd>
+          </dl>
+          <button class="btn btn-secondary" id="reinstall-script">Reinstalar widget</button>
+        </div>
+
+        <div class="card">
+          <h2>Estado</h2>
+          <label class="toggle">
+            <input type="checkbox" id="enabled" checked>
+            <span>Barra de premios activa</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="show-in-cart" checked>
+            <span>Mostrar en carrito</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="show-in-checkout" checked>
+            <span>Mostrar en checkout</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Apariencia</h2>
+        <div class="form-grid">
+          <label>Color principal<input type="color" id="primary-color" value="#6366F1"></label>
+          <label>Color secundario<input type="color" id="secondary-color" value="#E0E7FF"></label>
+          <label>Color acento<input type="color" id="accent-color" value="#10B981"></label>
+          <label>Color texto<input type="color" id="text-color" value="#111827"></label>
+          <label class="span-2">Tipografía
+            <select id="font-family">
+              <option value="Inter, system-ui, sans-serif">Inter</option>
+              <option value="'Poppins', sans-serif">Poppins</option>
+              <option value="'Montserrat', sans-serif">Montserrat</option>
+              <option value="Georgia, serif">Georgia</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Textos</h2>
+        <div class="form-grid">
+          <label class="span-2">Título<input type="text" id="title-text" maxlength="200"></label>
+          <label class="span-2">Texto de progreso <small>{{amount}}, {{reward}}</small>
+            <input type="text" id="progress-text" maxlength="200">
+          </label>
+          <label class="span-2">Texto desbloqueado <small>{{reward}}</small>
+            <input type="text" id="unlocked-text" maxlength="200">
+          </label>
+          <label class="span-2">Todos desbloqueados
+            <input type="text" id="all-unlocked-text" maxlength="200">
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-header">
+          <h2>Niveles de premios <span class="badge">máx. 6</span></h2>
+          <button class="btn btn-secondary" id="add-level">+ Agregar nivel</button>
+        </div>
+        <div id="levels-container"></div>
+      </section>
+
+      <div class="actions">
+        <button class="btn btn-primary btn-lg" id="save-btn">Guardar configuración</button>
+        <span id="save-status" class="save-status"></span>
+      </div>
+
+      <section class="card preview-card">
+        <h2>Vista previa</h2>
+        <div id="preview-root"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/admin/js/admin.js"></script>
+</body>
+</html>

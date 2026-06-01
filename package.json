@@ -1,0 +1,34 @@
+{
+  "name": "desbloquear-premios",
+  "version": "1.0.0",
+  "description": "Barra de progreso de premios para carrito de Tiendanube",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/start.js",
+    "dev": "node --watch src/index.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "tiendanube",
+    "nuvemshop",
+    "ecommerce",
+    "rewards"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1",
+    "uuid": "^11.0.5"
+  }
+}
