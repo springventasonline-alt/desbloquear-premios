@@ -42,6 +42,8 @@ TIENDANUBE_SCRIPT_ID=id_del_script_en_partner_portal
 DATABASE_URL=${{Postgres.DATABASE_URL}}
 ```
 
+**Importante:** no pegues `postgresql://...@localhost:5432/...`. Borrá cualquier `DATABASE_URL` manual con `localhost`. La referencia `${{Postgres.DATABASE_URL}}` toma la URL interna del servicio PostgreSQL de Railway (host tipo `*.railway.internal`).
+
 > Reemplazá `TU-DOMINIO` después de generar el dominio (paso 5). Si aún no lo tenés, deployá primero, generá dominio, y actualizá `APP_URL` y `TIENDANUBE_REDIRECT_URI`.
 
 ## 5. Dominio público
