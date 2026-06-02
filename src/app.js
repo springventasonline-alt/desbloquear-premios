@@ -1,11 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { config } from './config/index.js';
+import { getSessionMiddleware } from './config/session.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import apiRoutes from './routes/api.js';
@@ -36,16 +35,7 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  app.use(session({
-    secret: config.sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: config.nodeEnv === 'production',
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    },
-  }));
+  app.use(getSessionMiddleware());
 
   app.use('/widget', widgetRoutes);
   app.use(express.static(publicDir));

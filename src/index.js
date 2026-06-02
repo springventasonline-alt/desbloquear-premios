@@ -13,7 +13,7 @@ async function start() {
     console.error('[db] Ejecutá: docker compose up -d && npm run db:migrate');
   }
 
-  app.listen(config.port, () => {
+  app.listen(config.port, '0.0.0.0', () => {
     console.log(`[server] Desbloquear Premios corriendo en ${config.appUrl}`);
     console.log(`[server] App ID Tiendanube: ${config.tiendanube.appId}`);
     console.log(`[server] Instalar app: ${config.appUrl}/auth/install`);
