@@ -1,3 +1,7 @@
+# Railway inyecta PORT (normalmente 8080). La app escucha en process.env.PORT.
+# En Settings → Networking: NO uses target port 3000; dejalo en automático
+# o configurá target port = 8080 (igual que PORT en los logs del deploy).
+
 [build]
 builder = "NIXPACKS"
 
@@ -6,4 +10,5 @@ startCommand = "npm start"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 healthcheckPath = "/health"
-healthcheckTimeout = 120
+healthcheckTimeout = 300
+overlapSeconds = 30

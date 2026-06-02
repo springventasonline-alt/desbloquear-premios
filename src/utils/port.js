@@ -1,12 +1,15 @@
 /**
- * Railway inyecta PORT; el servidor debe escuchar exactamente en ese puerto.
+ * Railway inyecta PORT (típicamente 8080). El proxy público debe apuntar al mismo puerto.
+ * @see https://docs.railway.com/networking/troubleshooting/application-failed-to-respond
  */
 export function getListenPort() {
   const raw = process.env.PORT;
 
   if (!raw) {
     if (process.env.NODE_ENV === 'production') {
-      throw new Error('PORT no está definida. Railway debe inyectar process.env.PORT');
+      // Fallback al puerto habitual de Railway si PORT no está visible aún
+      console.warn('[port] PORT no definida, usando 8080 (default Railway)');
+      return 8080;
     }
     return 3000;
   }

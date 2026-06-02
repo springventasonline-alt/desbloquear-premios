@@ -46,7 +46,19 @@ DATABASE_URL=${{Postgres.DATABASE_URL}}
 
 > Reemplazá `TU-DOMINIO` después de generar el dominio (paso 5). Si aún no lo tenés, deployá primero, generá dominio, y actualizá `APP_URL` y `TIENDANUBE_REDIRECT_URI`.
 
-## 5. Dominio público
+## 5. Dominio público y puerto (evitar 502)
+
+Railway inyecta `PORT` (casi siempre **8080**). La app escucha en `process.env.PORT` en `0.0.0.0`.
+
+Si el dominio da **502** pero los logs muestran el servidor en 8080:
+
+1. Servicio web → **Settings** → **Networking** → tu dominio público
+2. En **Target port**:
+   - Dejalo en **automático** (recomendado), **o**
+   - Poné **8080** (debe coincidir con `process.env.PORT` en los logs)
+3. **No uses 3000** si la app escucha en 8080 — eso causa 502
+
+Verificá: `https://TU-DOMINIO.up.railway.app/health` → `{"ok":true,"listenPort":8080}`
 
 1. Servicio web → **Settings** → **Networking** → **Generate Domain**
 2. Copiá la URL (ej. `desbloquear-premios-production.up.railway.app`)

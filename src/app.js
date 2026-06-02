@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getSessionMiddleware } from './config/session.js';
+import { getListenPort } from './utils/port.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import apiRoutes from './routes/api.js';
@@ -22,7 +23,11 @@ export function createApp() {
   app.set('trust proxy', 1);
 
   app.get('/health', (_req, res) => {
-    res.status(200).json({ ok: true, port: process.env.PORT });
+    res.status(200).json({
+      ok: true,
+      envPort: process.env.PORT ?? null,
+      listenPort: getListenPort(),
+    });
   });
 
   app.use(helmet({
