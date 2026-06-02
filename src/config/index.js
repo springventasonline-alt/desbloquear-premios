@@ -59,7 +59,6 @@ for (const key of required) {
 }
 
 export const config = {
-  port: Number(process.env.PORT || 3000),
   nodeEnv: process.env.NODE_ENV || 'development',
   appUrl: process.env.APP_URL || 'http://localhost:3000',
   sessionSecret: process.env.SESSION_SECRET || 'dev-secret-change-me',

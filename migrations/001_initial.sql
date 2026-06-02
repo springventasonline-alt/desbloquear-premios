@@ -35,13 +35,17 @@ CREATE TABLE IF NOT EXISTS reward_configs (
 );
 
 -- Hasta 6 niveles de premios por tienda
-CREATE TYPE reward_type AS ENUM (
-  'free_shipping',
-  'percentage_discount',
-  'fixed_discount',
-  'gift',
-  'custom'
-);
+DO $$ BEGIN
+  CREATE TYPE reward_type AS ENUM (
+    'free_shipping',
+    'percentage_discount',
+    'fixed_discount',
+    'gift',
+    'custom'
+  );
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS reward_levels (
   id SERIAL PRIMARY KEY,

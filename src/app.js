@@ -21,6 +21,10 @@ export function createApp() {
 
   app.set('trust proxy', 1);
 
+  app.get('/health', (_req, res) => {
+    res.status(200).json({ ok: true, port: process.env.PORT });
+  });
+
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
