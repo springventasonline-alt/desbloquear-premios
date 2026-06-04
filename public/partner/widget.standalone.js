@@ -142,7 +142,7 @@
       barText = text;
     }
 
-    var isDarkBar = luminance(hexToRgb(barBg) || { r: 255, g: 255, b: 255 })) < 0.45;
+    var isDarkBar = luminance(hexToRgb(barBg) || { r: 255, g: 255, b: 255 }) < 0.45;
 
     return {
       primary: primary,
