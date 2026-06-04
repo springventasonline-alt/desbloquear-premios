@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "dev": "node --watch scripts/start.js",
+    "build:widget": "node scripts/build-widget.js",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js"
   },
