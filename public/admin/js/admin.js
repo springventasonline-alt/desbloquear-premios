@@ -263,12 +263,34 @@ els.addLevel.addEventListener('click', () => {
 
 els.saveBtn.addEventListener('click', save);
 els.reinstallScript.addEventListener('click', async () => {
+  els.reinstallScript.disabled = true;
+  els.scriptStatus.textContent = 'Instalando...';
+
   try {
-    await api('/script/install', { method: 'POST' });
-    els.scriptStatus.textContent = 'Sí ✓';
-    alert('Widget reinstalado');
+    const res = await fetch('/admin/api/script/install', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.installed) {
+      throw new Error(data.error || data.hint || 'No se pudo instalar el widget');
+    }
+
+    if (data.store) {
+      state.store = data.store;
+      els.scriptStatus.textContent = data.store.scriptInstalled ? 'Sí ✓' : 'No';
+    } else {
+      els.scriptStatus.textContent = 'Sí ✓';
+    }
+
+    alert(`Widget instalado correctamente (script ${data.scriptId} en tienda ${data.storeId})`);
   } catch (error) {
+    els.scriptStatus.textContent = 'Error — ver configuración';
     alert(error.message);
+  } finally {
+    els.reinstallScript.disabled = false;
   }
 });
 

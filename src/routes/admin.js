@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { requireStoreSession, attachStore } from '../middleware/auth.js';
 import {
+  findStoreById,
   getRewardConfigByStoreId,
   updateRewardConfig,
   replaceRewardLevels,
@@ -48,9 +49,18 @@ router.put('/levels', async (req, res, next) => {
 router.post('/script/install', async (req, res, next) => {
   try {
     const result = await activateStoreScript(req.store);
-    res.json(result);
+    const updatedStore = await findStoreById(req.store.id);
+    res.json({
+      ...result,
+      store: updatedStore ? sanitizeStore(updatedStore) : sanitizeStore(req.store),
+    });
   } catch (error) {
-    next(error);
+    console.error('[admin] script/install:', error.message);
+    res.status(400).json({
+      error: error.message,
+      installed: false,
+      hint: 'Configurá TIENDANUBE_SCRIPT_ID en Railway con el ID del script del Partner Portal.',
+    });
   }
 });
 
