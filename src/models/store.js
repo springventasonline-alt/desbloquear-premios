@@ -246,12 +246,19 @@ export async function getPublicWidgetConfig(tiendanubeStoreId) {
 }
 
 export async function saveOAuthState(state) {
+  // Limpiar states expirados (>15 min) para evitar acumulación
+  await query(
+    `DELETE FROM oauth_states WHERE created_at < NOW() - INTERVAL '15 minutes'`
+  );
   await query('INSERT INTO oauth_states (state) VALUES ($1)', [state]);
 }
 
 export async function consumeOAuthState(state) {
   const result = await query(
-    'DELETE FROM oauth_states WHERE state = $1 RETURNING state',
+    `DELETE FROM oauth_states
+     WHERE state = $1
+       AND created_at >= NOW() - INTERVAL '15 minutes'
+     RETURNING state`,
     [state]
   );
   return result.rows[0] || null;
