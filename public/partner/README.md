@@ -1,25 +1,50 @@
-# Widget para Partner Portal Tiendanube
+# Widget — Subir a Partner Portal (App 33285)
 
 ## Archivo a subir
 
-**`widget.js`** — script standalone minificado listo para el Partner Portal.
+**`widget.js`** (en esta carpeta) — ~7 KB, minificado, standalone.
 
-- URL API: `https://desbloquear-premios-production.up.railway.app/api/widget/{storeId}`
-- Cierre IIFE (compatible con Tiendanube)
-- Detecta `LS.store.id` y parámetro `?store=` del script
+URL API embebida: `https://desbloquear-premios-production.up.railway.app`
 
-## Cómo subirlo
+---
 
-1. [partners.tiendanube.com](https://partners.tiendanube.com) → App **33285** → **Scripts**
-2. Crear script (location: **store**, event: **onfirstinteraction**)
-3. **Add version** → subir `widget.js`
-4. **Deploy** a producción
-5. Copiar el **Script ID** → variable `TIENDANUBE_SCRIPT_ID` en Railway
+## Formulario “Crear script” en partners.tiendanube.com
 
-## Regenerar el build
+| Campo | Valor exacto | Notas |
+|-------|----------------|-------|
+| **Nombre del script** | `Desbloquear Premios - Barra de progreso` | Solo identificación interna para tu equipo |
+| **Script handle** | `desbloquear-premios-barra` | Minúsculas, sin espacios. Aparece en la URL del CDN de Tiendanube |
+| **Lugar de activación** | **Store** (Tienda / storefront) | La barra va en el carrito de la tienda, no en checkout |
+| **Evento** | **onfirstinteraction** | Recomendado por Tiendanube. `onload` requiere aprobación por email |
+| **Auto instalado** | **No** (desactivado) | La app asocia el script por API al instalar / “Reinstalar widget” |
+| **Modo desarrollo** | Opcional en pruebas | URL: `https://desbloquear-premios-production.up.railway.app/widget/rewards-bar.js` |
+| **NubeSDK** | **No activar** | Este widget es JavaScript clásico (DOM + objeto `LS`). NubeSDK es otro modelo (Web Worker) |
+
+### ¿Activar NubeSDK?
+
+**No.** NubeSDK sirve para apps que corren en un Web Worker sin acceso al DOM. Este widget:
+
+- Usa `document`, `LS.cart`, y `fetch`
+- Se inyecta en el HTML del carrito
+
+Si activás NubeSDK, este archivo **no funcionará**. Dejá el script como **JavaScript tradicional** en el Partner Portal.
+
+---
+
+## Después de crear el script
+
+1. **Add version** → subir `widget.js`
+2. **Deploy test** en tienda demo (opcional)
+3. **Deploy** a producción (estado `active`)
+4. Copiar el **Script ID** (número) → Railway: `TIENDANUBE_SCRIPT_ID=...`
+5. En el panel de la app → **Reinstalar widget** (asocia script a la tienda vía API)
+
+---
+
+## Regenerar el archivo
 
 ```bash
 npm run build:widget
 ```
 
-Editá `dist/widget.standalone.js` si necesitás cambiar la lógica; el build genera `widget.js`.
+Editar lógica en `widget.standalone.js` → vuelve a generar `widget.js`.
