@@ -49,6 +49,10 @@
       .trim();
   }
 
+  function formatLevelChip(title, threshold, currency) {
+    return cleanLevelTitle(title) + ' · ' + formatMoney(threshold * 100, currency);
+  }
+
   function normalizeProgressMessage(template, amountFormatted, rewardTitle) {
     var tpl = String(template || '');
     tpl = tpl.replace(/Agregá\s*\$\s*más/gi, 'Agregá {{amount}} más');
@@ -216,7 +220,7 @@
       return (
         '<div class="dpp-level' + (isUnlocked ? ' is-unlocked' : '') + '">' +
           '<span class="dpp-level-icon">' + level.icon + '</span>' +
-          '<span class="dpp-level-title">' + cleanLevelTitle(level.title) + '</span>' +
+          '<span class="dpp-level-title">' + formatLevelChip(level.title, level.threshold, currency) + '</span>' +
         '</div>'
       );
     }).join('');

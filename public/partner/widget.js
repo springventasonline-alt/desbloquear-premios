@@ -83,6 +83,14 @@
       .trim();
   }
 
+  function formatLevelChip(title, threshold, currency) {
+    return (
+      capitalizeFirst(cleanLevelTitle(title)) +
+      ' · ' +
+      formatMoney(threshold * 100, currency)
+    );
+  }
+
   function normalizeProgressMessage(template, amountFormatted, rewardTitle) {
     var tpl = String(template || '');
     tpl = tpl.replace(/Agregá\s*\$\s*más/gi, 'Agregá {{amount}} más');
@@ -271,8 +279,7 @@
       '#dpp-rewards-bar-root .dpp-level{text-align:center;padding:10px 6px;border-radius:8px;background:' + t.levelBg + ';color:' + t.levelMuted + ';font-size:11px;line-height:1.3}',
       '#dpp-rewards-bar-root .dpp-level.is-unlocked{color:' + t.barText + ';background:' + t.levelUnlockedBg + ';border:1px solid ' + t.levelUnlockedBorder + '}',
       '#dpp-rewards-bar-root .dpp-level-icon{font-size:20px;display:block;margin-bottom:4px}',
-      '#dpp-rewards-bar-root .dpp-level-title{font-weight:600;color:inherit;display:block}',
-      '#dpp-rewards-bar-root .dpp-level-meta{font-size:10px;margin-top:4px;opacity:0.85;display:block}',
+      '#dpp-rewards-bar-root .dpp-level-title{font-weight:600;color:inherit;display:block;font-size:10px;line-height:1.35}',
       '@media (max-width:480px){#dpp-rewards-bar-root .dpp-title{font-size:15px}#dpp-rewards-bar-root .dpp-message{font-size:13px}#dpp-rewards-bar-root .dpp-levels{grid-template-columns:repeat(2,1fr)}}',
     ].join('');
   }
@@ -304,9 +311,7 @@
           '"><span class="dpp-level-icon">' +
           escapeHtml(level.icon) +
           '</span><span class="dpp-level-title">' +
-          escapeHtml(capitalizeFirst(cleanLevelTitle(level.title))) +
-          '</span><span class="dpp-level-meta">Desde ' +
-          escapeHtml(formatMoney(level.threshold * 100, currency)) +
+          escapeHtml(formatLevelChip(level.title, level.threshold, currency)) +
           '</span></div>'
         );
       })
