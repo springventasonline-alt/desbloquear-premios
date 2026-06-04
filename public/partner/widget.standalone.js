@@ -58,15 +58,19 @@
 
   function formatMoney(cents, currency) {
     var amount = cents / 100;
-    var separator = (currency && currency.cents_separator) || ',';
     var thousands = (currency && currency.thousands_separator) || '.';
     var parts = amount.toFixed(0).split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
     var formatted = parts[0];
     if (currency && currency.display_short) {
-      return currency.display_short
-        .replace('{{amount}}', formatted)
-        .replace('{{amount_no_decimals}}', formatted);
+      var tpl = String(currency.display_short);
+      if (/\{\{/.test(tpl)) {
+        return tpl
+          .replace(/\{\{amount_no_decimals\}\}/g, formatted)
+          .replace(/\{\{amount_with_comma_separator\}\}/g, formatted)
+          .replace(/\{\{amount\}\}/g, formatted);
+      }
+      return tpl.trim() + formatted;
     }
     return '$' + formatted;
   }
@@ -74,6 +78,23 @@
   function interpolate(template, vars) {
     return template.replace(/\{\{(\w+)\}\}/g, function (_, key) {
       return vars[key] != null ? vars[key] : '';
+    });
+  }
+
+  function cleanLevelTitle(title) {
+    return String(title || '')
+      .replace(/\s*\$\s*$/, '')
+      .trim();
+  }
+
+  function normalizeProgressMessage(template, amountFormatted, rewardTitle) {
+    var tpl = String(template || '');
+    tpl = tpl.replace(/Agregá\s*\$\s*más/gi, 'Agregá {{amount}} más');
+    tpl = tpl.replace(/Te faltan\s*\$\s*para/gi, 'Te faltan {{amount}} para');
+    tpl = tpl.replace(/\$\s*(?=más|para)/gi, '{{amount}} ');
+    return interpolate(tpl, {
+      amount: amountFormatted,
+      reward: rewardTitle,
     });
   }
 
@@ -269,10 +290,11 @@
       message = config.texts.allUnlocked;
     } else if (progress.next) {
       var remaining = Math.max(0, progress.next.threshold - cartTotal);
-      message = interpolate(config.texts.progress, {
-        amount: formatMoney(remaining * 100, currency),
-        reward: capitalizeFirst(progress.next.title),
-      });
+      message = normalizeProgressMessage(
+        config.texts.progress,
+        formatMoney(remaining * 100, currency),
+        capitalizeFirst(cleanLevelTitle(progress.next.title))
+      );
     } else {
       message = config.texts.title;
     }
@@ -286,7 +308,7 @@
           '"><span class="dpp-level-icon">' +
           escapeHtml(level.icon) +
           '</span><span class="dpp-level-title">' +
-          escapeHtml(capitalizeFirst(level.title)) +
+          escapeHtml(capitalizeFirst(cleanLevelTitle(level.title))) +
           '</span><span class="dpp-level-meta">Desde ' +
           escapeHtml(formatMoney(level.threshold * 100, currency)) +
           '</span></div>'

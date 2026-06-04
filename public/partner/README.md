@@ -46,6 +46,63 @@ Logueate si el browser lo pide, ENTER en la terminal, y el script sube `public/p
 
 ---
 
+## Sin Node/npm en la terminal
+
+Si `node` o `npm` no se encuentran (terminal externa de macOS, sin Homebrew Node instalado), **subí el widget a mano**. Es la opción más rápida y no requiere instalar nada.
+
+### Subida manual (recomendado)
+
+1. Abrí el script en Partner Portal: [App 33285 — script #7124](https://partners.tiendanube.com/applications/details/33285/script/7124) e iniciá sesión si hace falta.
+2. **Agregar versión** → en el selector de archivo elegí **`widget.js`** de esta carpeta:
+   ```
+   /Users/palomaolaviaga/projects/desbloquear-premios/public/partner/widget.js
+   ```
+   (En Finder: `projects` → `desbloquear-premios` → `public` → `partner` → `widget.js`.)
+3. Guardá la versión y, si aparece, **Instalar en las tiendas** (o menú ⋮ → Instalar en las tiendas).
+
+No hace falta `npm run build:widget` si `widget.js` ya está actualizado en el repo.
+
+### Instalar Node (para automatizar después)
+
+- **Homebrew:** `brew install node` (requiere Homebrew; en `.zprofile` suele ir `eval "$(/opt/homebrew/bin/brew shellenv zsh)"`).
+- **Instalador oficial:** [https://nodejs.org](https://nodejs.org) (LTS).
+
+Luego, en la carpeta del proyecto:
+
+```bash
+cd /Users/palomaolaviaga/projects/desbloquear-premios
+npm install
+npm install -D playwright
+npx playwright install chromium
+npm run upload:partner-widget
+```
+
+### Terminal integrada de Cursor vs zsh externo
+
+- La **terminal integrada de Cursor** suele tener `node` en el PATH vía:
+  `/Applications/Cursor.app/Contents/Resources/app/resources/helpers/node`
+  Ese binario **no incluye `npm`**; sirve para scripts puntuales, no para `npm run …`.
+- Una **terminal externa** (Terminal.app, iTerm) solo ve `node` si lo instalaste (brew, nodejs.org) o si cargás **nvm/fnm** en `~/.zshrc`.
+
+Ejemplo **nvm** en `~/.zshrc` (después de instalar nvm):
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+```
+
+Abrí una terminal nueva y comprobá: `which node` y `which npm`.
+
+### One-liner con Node de Cursor (solo si ya tenés `node_modules` + Playwright)
+
+En esta Mac **no hay `npm` en el sistema**; el upload automático necesita Node completo + dependencias instaladas. Si ya corriste `npm install` y Playwright en el proyecto:
+
+```bash
+cd /Users/palomaolaviaga/projects/desbloquear-premios && /Applications/Cursor.app/Contents/Resources/app/resources/helpers/node scripts/upload-partner-widget.mjs
+```
+
+---
+
 ## Después de crear el script
 
 1. **Add version** → subir `widget.js`
@@ -63,3 +120,15 @@ npm run build:widget
 ```
 
 Editar lógica en `widget.standalone.js` → vuelve a generar `widget.js`.
+
+---
+
+## SyntaxError en la tienda (línea ~2300 del HTML)
+
+Si la consola muestra `Uncaught SyntaxError: Unexpected string` en la URL de la página (no en un `.js` externo):
+
+1. **Subí v6** de `public/partner/widget.js` (build limpio, sin minificador roto). La v5 híbrida minificada+legible podía romperse al inyectarse inline.
+2. **Limpiá scripts viejos del tema** (Admin → Diseño → Editar código): buscar `65000`, `barra regalos`, `dpp-rewards`, `popup-overlay`.
+3. **Códigos externos** (`store.assorted_js` / `external_scripts`): quitar barras manuales o widgets duplicados.
+4. **GTM** (`GTM-KBQ9QMGC`): pausar etiquetas «barra regalos» y popup asesoría si siguen activas.
+5. Verificá en incógnito tras deploy v6 + limpieza.

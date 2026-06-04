@@ -1,5 +1,105 @@
 /* Desbloquear Premios | Tiendanube | https://desbloquear-premios-production.up.railway.app */
-(function(){'use strict';var APP_BASE='https://desbloquear-premios-production.up.railway.app';var CONTAINER_ID='dpp-rewards-bar-root';var POLL_INTERVAL=1500;var CREAM_BG='#faf9f7';var SPRING_PRIMARY='#1a1a1a';var SPRING_ACCENT='#c9a962';function getStoreId(){if(window.LS && window.LS.store && window.LS.store.id){return String(window.LS.store.id);}var script=document.currentScript;if(script && script.src){var match=script.src.match(/[?&]store=(\d+)/);if(match)return match[1];}var scripts=document.getElementsByTagName('script');for(var i=scripts.length-1;i>=0;i--){var m=scripts[i].src && scripts[i].src.match(/[?&]store=(\d+)/);if(m)return m[1];}return null;}function isCartContext(){var path=(window.location.pathname || '').toLowerCase();if(path.indexOf('/comprar')!==-1 || path.indexOf('/cart')!==-1)return true;return !!document.querySelector('#modal-cart.show, #modal-cart.in, .js-ajax-cart-panel.is-open, .js-cart-drawer.is-open');}function shouldShowInCart(config){if(!config.visibility || config.visibility.cart !==false)return true;return false;}function normalizeBrandColors(colors){var primary=(colors && colors.primary)|| SPRING_PRIMARY;var accent=(colors && colors.accent)|| SPRING_ACCENT;var secondary=(colors && colors.secondary)|| CREAM_BG;var text=(colors && colors.text)|| SPRING_PRIMARY;var p=String(primary).toLowerCase();if(p==='#ff0000' || p==='#f00' || p==='red'){primary=SPRING_PRIMARY;if(String(accent).toLowerCase()==='#000000')accent=SPRING_ACCENT;}return{primary:primary,accent:accent,secondary:secondary,text:text};}function formatMoney(cents,currency){var amount=cents/100;var separator=(currency && currency.cents_separator)|| ',';var thousands=(currency && currency.thousands_separator)|| '.';var parts=amount.toFixed(0).split('.');parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,thousands);var formatted=parts[0];if(currency && currency.display_short){return currency.display_short .replace('{{amount}}',formatted).replace('{{amount_no_decimals}}',formatted);}return '$'+formatted;}function interpolate(template,vars){return template.replace(/\{\{(\w+)\}\}/g,function(_,key){return vars[key]!=null ? vars[key]:'';});}function escapeHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g, '&quot;');
+(function () {
+  'use strict';
+
+  var APP_BASE = 'https://desbloquear-premios-production.up.railway.app';
+  var CONTAINER_ID = 'dpp-rewards-bar-root';
+  var POLL_INTERVAL = 1500;
+  var CREAM_BG = '#faf9f7';
+  var SPRING_PRIMARY = '#1a1a1a';
+  var SPRING_ACCENT = '#c9a962';
+
+  function getStoreId() {
+    if (window.LS && window.LS.store && window.LS.store.id) {
+      return String(window.LS.store.id);
+    }
+    var script = document.currentScript;
+    if (script && script.src) {
+      var match = script.src.match(/[?&]store=(\d+)/);
+      if (match) return match[1];
+    }
+    var scripts = document.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      var m = scripts[i].src && scripts[i].src.match(/[?&]store=(\d+)/);
+      if (m) return m[1];
+    }
+    return null;
+  }
+
+  function isCartContext() {
+    var path = (window.location.pathname || '').toLowerCase();
+    if (path.indexOf('/comprar') !== -1 || path.indexOf('/cart') !== -1) return true;
+    return !!document.querySelector(
+      '#modal-cart.show, #modal-cart.in, .js-ajax-cart-panel.is-open, .js-cart-drawer.is-open'
+    );
+  }
+
+  function shouldShowInCart(config) {
+    if (!config.visibility || config.visibility.cart !== false) return true;
+    return false;
+  }
+
+  function normalizeBrandColors(colors) {
+    var primary = (colors && colors.primary) || SPRING_PRIMARY;
+    var accent = (colors && colors.accent) || SPRING_ACCENT;
+    var secondary = (colors && colors.secondary) || CREAM_BG;
+    var text = (colors && colors.text) || SPRING_PRIMARY;
+    var p = String(primary).toLowerCase();
+    if (p === '#ff0000' || p === '#f00' || p === 'red') {
+      primary = SPRING_PRIMARY;
+      if (String(accent).toLowerCase() === '#000000') accent = SPRING_ACCENT;
+    }
+    return { primary: primary, accent: accent, secondary: secondary, text: text };
+  }
+
+  function formatMoney(cents, currency) {
+    var amount = cents / 100;
+    var thousands = (currency && currency.thousands_separator) || '.';
+    var parts = amount.toFixed(0).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
+    var formatted = parts[0];
+    if (currency && currency.display_short) {
+      var tpl = String(currency.display_short);
+      if (/\{\{/.test(tpl)) {
+        return tpl
+          .replace(/\{\{amount_no_decimals\}\}/g, formatted)
+          .replace(/\{\{amount_with_comma_separator\}\}/g, formatted)
+          .replace(/\{\{amount\}\}/g, formatted);
+      }
+      return tpl.trim() + formatted;
+    }
+    return '$' + formatted;
+  }
+
+  function interpolate(template, vars) {
+    return template.replace(/\{\{(\w+)\}\}/g, function (_, key) {
+      return vars[key] != null ? vars[key] : '';
+    });
+  }
+
+  function cleanLevelTitle(title) {
+    return String(title || '')
+      .replace(/\s*\$\s*$/, '')
+      .trim();
+  }
+
+  function normalizeProgressMessage(template, amountFormatted, rewardTitle) {
+    var tpl = String(template || '');
+    tpl = tpl.replace(/Agregá\s*\$\s*más/gi, 'Agregá {{amount}} más');
+    tpl = tpl.replace(/Te faltan\s*\$\s*para/gi, 'Te faltan {{amount}} para');
+    tpl = tpl.replace(/\$\s*(?=más|para)/gi, '{{amount}} ');
+    return interpolate(tpl, {
+      amount: amountFormatted,
+      reward: rewardTitle,
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   function capitalizeFirst(str) {
@@ -102,7 +202,7 @@
     return (lighter + 0.05) / (darker + 0.05);
   }
 
-  /** Tarjeta clara legible sobre paneles claros u oscuros del carrito. */
+  
   function resolveBarTheme(config) {
     var colors = normalizeBrandColors(config.colors);
     var primary = colors.primary;
@@ -159,7 +259,7 @@
 
   function buildStyles(config) {
     var t = resolveBarTheme(config);
-    var font = config.typography.fontFamily || "'Montserrat',sans-serif";
+    var font = config.typography.fontFamily || "'Montserrat', sans-serif";
     return [
       '#dpp-rewards-bar-root{font-family:' + font + ';margin:16px 0 20px;color:' + t.barText + ';width:100%;box-sizing:border-box}',
       '#dpp-rewards-bar-root .dpp-bar{background:' + t.barBg + '!important;color:' + t.barText + '!important;border-radius:10px;padding:16px;border:1px solid rgba(26,26,26,0.1);box-shadow:0 2px 12px rgba(0,0,0,0.06)}',
@@ -186,10 +286,11 @@
       message = config.texts.allUnlocked;
     } else if (progress.next) {
       var remaining = Math.max(0, progress.next.threshold - cartTotal);
-      message = interpolate(config.texts.progress, {
-        amount: formatMoney(remaining * 100, currency),
-        reward: capitalizeFirst(progress.next.title),
-      });
+      message = normalizeProgressMessage(
+        config.texts.progress,
+        formatMoney(remaining * 100, currency),
+        capitalizeFirst(cleanLevelTitle(progress.next.title))
+      );
     } else {
       message = config.texts.title;
     }
@@ -203,7 +304,7 @@
           '"><span class="dpp-level-icon">' +
           escapeHtml(level.icon) +
           '</span><span class="dpp-level-title">' +
-          escapeHtml(capitalizeFirst(level.title)) +
+          escapeHtml(capitalizeFirst(cleanLevelTitle(level.title))) +
           '</span><span class="dpp-level-meta">Desde ' +
           escapeHtml(formatMoney(level.threshold * 100, currency)) +
           '</span></div>'
@@ -278,4 +379,52 @@
       enabled: raw.enabled,
       visibility: raw.visibility || { cart: true, checkout: true },
       colors: colors,
-      typography: raw.typography || { fontFamily: "'Montserrat',sans-serif"},texts:raw.texts ||{},levels:raw.levels ||[],};}function fetchConfig(storeId){return fetch(APP_BASE+'/api/widget/'+storeId,{credentials:'omit'}).then(function(res){if(!res.ok)throw new Error('HTTP '+res.status);return res.json();});}function init(){var storeId=getStoreId();if(!storeId){console.warn('[DPP] No se detectó store ID');return;}fetchConfig(storeId).then(function(raw){if(!raw || !raw.enabled)return;var config=prepareConfig(raw);mount(config);var lastTotal=getCartSubtotal();setInterval(function(){var current=getCartSubtotal();if(current !==lastTotal){lastTotal=current;mount(config);}},POLL_INTERVAL);document.addEventListener('cart.updated',function(){mount(config);});}).catch(function(err){console.warn('[DPP] Widget no cargado:',err.message);});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}})();
+      typography: raw.typography || { fontFamily: "'Montserrat', sans-serif" },
+      texts: raw.texts || {},
+      levels: raw.levels || [],
+    };
+  }
+
+  function fetchConfig(storeId) {
+    return fetch(APP_BASE + '/api/widget/' + storeId, { credentials: 'omit' }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    });
+  }
+
+  function init() {
+    var storeId = getStoreId();
+    if (!storeId) {
+      console.warn('[DPP] No se detectó store ID');
+      return;
+    }
+    fetchConfig(storeId)
+      .then(function (raw) {
+        if (!raw || !raw.enabled) return;
+        var config = prepareConfig(raw);
+        mount(config);
+
+        var lastTotal = getCartSubtotal();
+        setInterval(function () {
+          var current = getCartSubtotal();
+          if (current !== lastTotal) {
+            lastTotal = current;
+            mount(config);
+          }
+        }, POLL_INTERVAL);
+
+        document.addEventListener('cart.updated', function () {
+          mount(config);
+        });
+      })
+      .catch(function (err) {
+        console.warn('[DPP] Widget no cargado:', err.message);
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

@@ -9,6 +9,7 @@
     "dev": "node --watch scripts/start.js",
     "build:widget": "node scripts/build-widget.js",
     "upload:partner-widget": "node scripts/upload-partner-widget.mjs",
+    "apply:spring-config": "node scripts/apply-spring-config-via-api.mjs",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js"
   },
