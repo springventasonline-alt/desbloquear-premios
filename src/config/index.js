@@ -70,6 +70,8 @@ export const config = {
     apiVersion: process.env.TIENDANUBE_API_VERSION || '2025-03',
     userAgent: process.env.TIENDANUBE_USER_AGENT || 'DesbloquearPremios (dev@localhost)',
     scriptId: process.env.TIENDANUBE_SCRIPT_ID || null,
+    /** true = script "Auto instalado" en Partner Portal; no usar POST /scripts */
+    scriptAutoInstall: process.env.TIENDANUBE_SCRIPT_AUTO_INSTALL !== 'false',
     authUrl: 'https://www.tiendanube.com/apps',
     tokenUrl: 'https://www.tiendanube.com/apps/authorize/token',
     apiBaseUrl: 'https://api.tiendanube.com',

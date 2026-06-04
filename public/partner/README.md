@@ -16,7 +16,7 @@ URL API embebida: `https://desbloquear-premios-production.up.railway.app`
 | **Script handle** | `desbloquear-premios-barra` | Minúsculas, sin espacios. Aparece en la URL del CDN de Tiendanube |
 | **Lugar de activación** | **Store** (Tienda / storefront) | La barra va en el carrito de la tienda, no en checkout |
 | **Evento** | **onfirstinteraction** | Recomendado por Tiendanube. `onload` requiere aprobación por email |
-| **Auto instalado** | **No** (desactivado) | La app asocia el script por API al instalar / “Reinstalar widget” |
+| **Auto instalado** | **Sí** (recomendado con `public/widget.js`) | Tiendanube carga el script solo; en Railway: `TIENDANUBE_SCRIPT_AUTO_INSTALL=true` |
 | **Modo desarrollo** | Opcional en pruebas | URL: `https://desbloquear-premios-production.up.railway.app/widget/rewards-bar.js` |
 | **NubeSDK** | **No activar** | Este widget es JavaScript clásico (DOM + objeto `LS`). NubeSDK es otro modelo (Web Worker) |
 

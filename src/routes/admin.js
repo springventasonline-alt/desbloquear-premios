@@ -59,8 +59,32 @@ router.post('/script/install', async (req, res, next) => {
     res.status(400).json({
       error: error.message,
       installed: false,
-      hint: 'Configurá TIENDANUBE_SCRIPT_ID en Railway con el ID del script del Partner Portal.',
+      hint:
+        'TIENDANUBE_SCRIPT_ID=7124 y TIENDANUBE_SCRIPT_AUTO_INSTALL=true si el script tiene Auto instalado.',
     });
+  }
+});
+
+router.get('/script/status', async (req, res, next) => {
+  try {
+    const { listStoreScripts } = await import('../services/tiendanubeApi.js');
+    const { config } = await import('../config/index.js');
+    let scripts = [];
+    let apiError = null;
+    try {
+      scripts = await listStoreScripts(req.store.tiendanube_store_id, req.store.access_token);
+    } catch (error) {
+      apiError = error.message;
+    }
+    res.json({
+      scriptId: config.tiendanube.scriptId,
+      autoInstall: config.tiendanube.scriptAutoInstall,
+      scriptInstalledInDb: req.store.script_installed,
+      scriptsFromApi: scripts,
+      apiError,
+    });
+  } catch (error) {
+    next(error);
   }
 });
 

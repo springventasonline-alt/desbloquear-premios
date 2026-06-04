@@ -285,7 +285,10 @@ els.reinstallScript.addEventListener('click', async () => {
       els.scriptStatus.textContent = 'Sí ✓';
     }
 
-    alert(`Widget instalado correctamente (script ${data.scriptId} en tienda ${data.storeId})`);
+    const msg = data.message
+      ? data.message
+      : `Widget OK (script ${data.scriptId}, modo ${data.mode || 'manual'})`;
+    alert(msg);
   } catch (error) {
     els.scriptStatus.textContent = 'Error — ver configuración';
     alert(error.message);

@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
-const sourcePath = path.join(root, 'dist', 'widget.standalone.js');
-const outPath = path.join(root, 'dist', 'widget.js');
+const sourcePath = path.join(root, 'public', 'partner', 'widget.standalone.js');
+const publicPath = path.join(root, 'public', 'widget.js');
 const partnerPath = path.join(root, 'public', 'partner', 'widget.js');
 
 function minify(code) {
@@ -42,11 +42,11 @@ async function build() {
 
   const output = banner + minified;
   await fs.mkdir(path.dirname(partnerPath), { recursive: true });
-  await fs.writeFile(outPath, output, 'utf8');
+  await fs.writeFile(publicPath, output, 'utf8');
   await fs.writeFile(partnerPath, output, 'utf8');
 
-  const stats = await fs.stat(partnerPath);
-  console.log('[build-widget] OK → dist/widget.js + public/partner/widget.js (%d KB)', Math.round(stats.size / 1024));
+  const stats = await fs.stat(publicPath);
+  console.log('[build-widget] OK → public/widget.js (%d KB)', Math.round(stats.size / 1024));
 }
 
 build().catch((err) => {
