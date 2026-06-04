@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    participant Widget as Widget storefront
+    participant API as App Backend
+    participant DB as PostgreSQL
+
+    Widget->>API: GET /api/widget/storeId
+    API->>DB: reward_config levels
+    alt Config deshabilitada
+        API-->>Widget: 404
+    else Config activa
+        API-->>Widget: JSON premios umbrales
+        Widget->>Widget: Progreso vs LS.cart.subtotal
+    end

@@ -192,13 +192,22 @@ function buildPreviewHtml(config, cartTotal) {
       .replace('{{reward}}', next.title);
   }
 
+  const barBg = config.colors.secondary || '#faf9f7';
+  const levelsPreview = config.levels
+    .map(
+      (l) =>
+        `<span style="display:inline-block;margin:4px 4px 0 0;padding:6px 8px;border-radius:6px;background:rgba(26,26,26,.06);font-size:11px">${escapeHtml(l.icon || '🎁')} ${escapeHtml(l.title)} · Desde $${Number(l.threshold).toLocaleString('es-AR')}</span>`
+    )
+    .join('');
+
   return `
-    <div style="font-family:${config.typography.fontFamily};background:${config.colors.secondary};border-radius:12px;padding:16px;color:${config.colors.text}">
-      <p style="font-weight:700;margin:0 0 10px">${config.texts.title}</p>
-      <div style="background:rgba(0,0,0,.08);border-radius:999px;height:10px;overflow:hidden">
+    <div style="font-family:${config.typography.fontFamily};background:${barBg};border-radius:10px;padding:16px;color:${config.colors.text};border:1px solid rgba(26,26,26,.1)">
+      <p style="font-weight:700;margin:0 0 10px;font-size:16px">${escapeHtml(config.texts.title)}</p>
+      <div style="background:rgba(26,26,26,.12);border-radius:999px;height:8px;overflow:hidden">
         <div style="width:${percent}%;height:100%;background:linear-gradient(90deg,${config.colors.primary},${config.colors.accent});border-radius:999px"></div>
       </div>
-      <p style="font-size:13px;margin-top:10px">${message}</p>
+      <p style="font-size:14px;margin-top:10px;line-height:1.4">${escapeHtml(message)}</p>
+      <div style="margin-top:10px">${levelsPreview}</div>
     </div>
   `;
 }

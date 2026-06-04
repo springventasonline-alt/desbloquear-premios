@@ -1,0 +1,13 @@
+sequenceDiagram
+    autonumber
+    actor Buyer as Comprador
+    participant Store as Storefront Tiendanube
+    participant CDN as CDN Script Partner
+    participant Widget as widget.js
+
+    Buyer->>Store: Abre carrito
+    Store->>CDN: Carga script 7124 auto-install
+    CDN-->>Store: JavaScript Partner Portal
+    Store->>Widget: onfirstinteraction
+    Widget->>Widget: LS.store.id LS.cart
+    Widget->>Store: Inyecta barra en DOM carrito

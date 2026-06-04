@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagramas de secuencia — Homologación Tiendanube | Desbloquear Premios</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --muted: #5c5c7a;
+      --accent: #2d6a4f;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 4rem;
+      background: #fafafa;
+    }
+    .cover {
+      text-align: center;
+      padding: 3rem 1rem 4rem;
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: 3rem;
+      page-break-after: always;
+    }
+    .cover h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+    .cover .subtitle { color: var(--muted); font-size: 1.05rem; }
+    .meta {
+      display: inline-block;
+      text-align: left;
+      margin-top: 2rem;
+      padding: 1.25rem 1.75rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .meta dt { font-weight: 600; float: left; clear: left; width: 11rem; }
+    .meta dd { margin: 0 0 0.5rem 11rem; color: var(--muted); }
+    section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem 2rem 2rem;
+      margin-bottom: 2.5rem;
+      page-break-inside: avoid;
+    }
+    section h2 {
+      font-size: 1.2rem;
+      color: var(--accent);
+      margin: 0 0 0.35rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    section p.lead {
+      margin: 0 0 1.25rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+    .mermaid { margin: 0.5rem 0; }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(250, 250, 250, 0.95);
+      padding: 0.75rem 0 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .toolbar button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .toolbar button.secondary {
+      background: #fff;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .footer-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    @media print {
+      body { background: #fff; padding: 0; max-width: none; }
+      .toolbar { display: none !important; }
+      section { border: none; box-shadow: none; page-break-inside: avoid; }
+      .cover { page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Exportar PDF (Imprimir)</button>
+    <button type="button" class="secondary" onclick="exportSvg()">Descargar SVG por diagrama</button>
+  </div>
+
+  <header class="cover">
+    <h1>Diagramas de secuencia — Homologación Tiendanube</h1>
+    <p class="subtitle">App «Desbloquear premios para vender más»</p>
+    <dl class="meta">
+      <dt>App ID</dt><dd>33285</dd>
+      <dt>Script Partner</dt><dd>7124 (auto-instalado, evento onfirstinteraction)</dd>
+      <dt>Backend</dt><dd>desbloquear-premios-production.up.railway.app</dd>
+      <dt>OAuth redirect</dt><dd>/auth/callback</dd>
+      <dt>Webhooks GDPR</dt><dd>/webhooks/app/uninstalled, /webhooks/store/redact</dd>
+    </dl>
+  </header>
+
+  <section id="s1">
+    <h2>1. Instalación y autenticación OAuth</h2>
+    <p class="lead">
+      El comerciante instala la app desde el marketplace o el enlace de instalación.
+      Se valida el <code>state</code> anti-CSRF, se intercambia el código por <code>access_token</code>,
+      se persiste la tienda y se activa el script asociado.
+    </p>
+    <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Merchant as Comerciante
+    participant TN as Tiendanube (OAuth)
+    participant App as App Backend (Railway)
+    participant DB as PostgreSQL
+    participant API as API Tiendanube
+
+    Merchant->>TN: Instalar app 33285 / autorizar permisos
+    TN->>App: GET /auth/install (opcional, flujo propio)
+    App->>DB: INSERT oauth_states (state CSRF)
+    App->>TN: Redirect authorize?state=...
+    TN->>Merchant: Pantalla de consentimiento OAuth
+    Merchant->>TN: Acepta permisos
+    TN->>App: GET /auth/callback?code=...&state=...
+    App->>DB: consumeOAuthState(state) — validación CSRF
+    App->>TN: POST /apps/authorize/token (code + client_secret)
+    TN-->>App: access_token, scope, user_id (store_id)
+    App->>API: GET /v1/{store_id}/store (Bearer token)
+    API-->>App: nombre, URL tienda
+    App->>DB: upsert stores (token, metadatos)
+    App->>App: activateStoreScript(store)
+    alt Script auto-instalado (Partner Portal)
+        App->>DB: script_installed = true
+        Note over TN,App: Tiendanube ya inyecta el script al instalar la app
+    else Script manual (API)
+        App->>API: POST /v1/{store_id}/scripts/{script_id}
+        API-->>App: script asociado (active/testing)
+    end
+    App->>App: Sesión admin (storeId)
+    App->>Merchant: Redirect /admin (panel configuración)
+    </pre>
+  </section>
+
+  <section id="s2">
+    <h2>2. Inyección del widget en la tienda (script)</h2>
+    <p class="lead">
+      Con «Auto instalado» activo en el Partner Portal, Tiendanube sirve el JS desde su CDN
+      en el storefront (evento <code>onfirstinteraction</code>). El widget no modifica archivos del tema;
+      se monta en el DOM del carrito usando el objeto global <code>LS</code>.
+    </p>
+    <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Buyer as Comprador
+    participant Store as Storefront Tiendanube
+    participant CDN as CDN Script (Partner)
+    participant Widget as widget.js (barra premios)
+
+    Buyer->>Store: Navega tienda / abre carrito
+    Store->>Store: Carga HTML carrito (tema + slots nubesdk)
+    Note over Store: App instalada → Tiendanube registra script 7124
+    Store->>CDN: Solicita script (handle desbloquear-premios-barra)
+    CDN-->>Store: JavaScript minificado (versión active del Partner)
+    Store->>Widget: Ejecuta script (onfirstinteraction)
+    Widget->>Widget: Lee LS.store.id (ID tienda)
+    Widget->>Widget: Observa LS.cart / DOM panel carrito
+    Widget->>Store: Inyecta barra de progreso en contenedor carrito
+    Note over Widget,Store: Modo dev alternativo: /widget/rewards-bar.js desde Railway
+    </pre>
+  </section>
+
+  <section id="s3">
+    <h2>3. Carrito consulta configuración de premios al backend</h2>
+    <p class="lead">
+      Tras montar la UI, el widget obtiene umbrales, textos y colores desde la API pública.
+      Solo responde si la tienda está activa y la configuración está habilitada.
+    </p>
+    <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant Widget as Widget (storefront)
+    participant API as App Backend
+    participant DB as PostgreSQL
+
+    Widget->>Widget: resolveStoreId() → LS.store.id
+    Widget->>API: GET /api/widget/{storeId}
+    API->>DB: findStore + reward_config + reward_levels
+    alt Tienda inexistente o config deshabilitada
+        API-->>Widget: 404 — no muestra barra
+    else Config activa
+        API-->>Widget: JSON (colores, textos, niveles, umbrales)
+        Widget->>Widget: Calcula subtotal LS.cart.subtotal / 100
+        Widget->>Widget: Renderiza progreso y premios desbloqueados
+        loop Actualización carrito (poll / DOM)
+            Widget->>Widget: Detecta cambio LS.cart.subtotal
+            Widget->>Widget: Recalcula progreso vs umbrales
+        end
+    end
+    Note over API: Cache-Control: public, max-age=60
+    Note over Merchant: Comerciante edita premios en /admin → persiste en DB
+    </pre>
+  </section>
+
+  <section id="s4">
+    <h2>4. Desinstalación de la app</h2>
+    <p class="lead">
+      Al desinstalar desde el admin de Tiendanube se envían webhooks GDPR.
+      La app marca la tienda como desinstalada; Tiendanube deja de inyectar el script automáticamente.
+    </p>
+    <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Merchant as Comerciante
+    participant TN as Tiendanube
+    participant App as App Backend
+    participant DB as PostgreSQL
+    participant Store as Storefront
+
+    Merchant->>TN: Desinstalar app desde panel Apps
+    TN->>TN: Revoca tokens OAuth de la app
+    TN->>TN: Deja de cargar script auto-instalado (7124)
+    TN->>App: POST /webhooks/app/uninstalled { store_id }
+    App->>DB: UPDATE stores SET uninstalled_at = NOW()
+    TN->>App: POST /webhooks/store/redact (GDPR, opcional)
+    App->>DB: markStoreUninstalled (idempotente)
+    App-->>TN: 200 { received: true }
+    Store-->>Buyer: Carrito sin barra de premios
+    Note over App: Scripts manuales: DELETE /v1/{store}/scripts vía API si aplica
+    Note over DB: Datos conservados según política; tienda excluida de APIs activas
+    </pre>
+  </section>
+
+  <p class="footer-note">
+    Generado para homologación Tiendanube — App 33285. Código fuente: rutas <code>/auth</code>,
+    <code>/api/widget/:storeId</code>, <code>/webhooks/*</code>, servicio <code>scriptInstaller.js</code>.
+    Para PDF: botón «Exportar PDF» o Archivo → Imprimir → Guardar como PDF.
+  </p>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      sequence: { actorMargin: 50, messageMargin: 35 },
+      securityLevel: 'loose',
+    });
+
+    function exportSvg() {
+      document.querySelectorAll('section .mermaid svg').forEach((svg, i) => {
+        const blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'homologacion-diagrama-' + (i + 1) + '.svg';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    }
+  </script>
+</body>
+</html>

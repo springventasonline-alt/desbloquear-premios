@@ -31,6 +31,21 @@ Si activás NubeSDK, este archivo **no funcionará**. Dejá el script como **Jav
 
 ---
 
+## Subir nueva versión (v.5+) desde tu Mac
+
+El agente en Cursor **no puede** usar el selector de archivos del portal. En la terminal del proyecto:
+
+```bash
+npm run build:widget
+npx playwright install chromium
+npm install -D playwright   # solo la primera vez
+npm run upload:partner-widget
+```
+
+Logueate si el browser lo pide, ENTER en la terminal, y el script sube `public/partner/widget.js` + «Instalar en las tiendas».
+
+---
+
 ## Después de crear el script
 
 1. **Add version** → subir `widget.js`

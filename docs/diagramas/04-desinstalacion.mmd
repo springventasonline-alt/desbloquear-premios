@@ -1,0 +1,13 @@
+sequenceDiagram
+    autonumber
+    actor Merchant as Comerciante
+    participant TN as Tiendanube
+    participant App as App Backend
+    participant DB as PostgreSQL
+
+    Merchant->>TN: Desinstalar app
+    TN->>TN: Revoca OAuth y script
+    TN->>App: POST /webhooks/app/uninstalled
+    App->>DB: uninstalled_at NOW
+    TN->>App: POST /webhooks/store/redact
+    App-->>TN: 200 received

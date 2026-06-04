@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    actor Merchant as Comerciante
+    participant TN as Tiendanube OAuth
+    participant App as App Backend Railway
+    participant DB as PostgreSQL
+    participant API as API Tiendanube
+
+    Merchant->>TN: Instalar app 33285
+    TN->>App: GET /auth/install opcional
+    App->>DB: INSERT oauth_states state CSRF
+    App->>TN: Redirect authorize
+    TN->>Merchant: Consentimiento OAuth
+    Merchant->>TN: Acepta permisos
+    TN->>App: GET /auth/callback code state
+    App->>DB: consumeOAuthState
+    App->>TN: POST authorize/token
+    TN-->>App: access_token store_id
+    App->>API: GET store info
+    API-->>App: nombre URL
+    App->>DB: upsert stores
+    App->>App: activateStoreScript
+    App->>Merchant: Redirect /admin
