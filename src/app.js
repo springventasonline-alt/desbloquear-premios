@@ -8,6 +8,7 @@ import { getSessionMiddleware } from './config/session.js';
 import { getListenPort } from './utils/port.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
+import adminExemptRoutes from './routes/adminExempt.js';
 import apiRoutes from './routes/api.js';
 import webhookRoutes from './routes/webhooks.js';
 import widgetRoutes from './routes/widget.js';
@@ -57,6 +58,10 @@ export function createApp() {
     res.sendFile(path.join(publicDir, 'admin', 'index.html'));
   });
 
+  app.get('/admin/exempt', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'admin', 'exempt', 'index.html'));
+  });
+
   app.get('/help', (_req, res) => {
     res.sendFile(path.join(publicDir, 'help', 'index.html'));
   });
@@ -70,6 +75,7 @@ export function createApp() {
   });
 
   app.use('/auth', authRoutes);
+  app.use('/admin/api/exempt', adminExemptRoutes);
   app.use('/admin/api', adminRoutes);
   app.use('/api', apiRoutes);
   app.use('/webhooks', webhookRoutes);

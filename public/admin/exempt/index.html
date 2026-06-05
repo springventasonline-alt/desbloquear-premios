@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exención de pago — Desbloquear Premios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div>
+        <h1>Exención de pago</h1>
+        <p class="subtitle">Administrá tiendas con acceso completo sin suscripción</p>
+      </div>
+      <div class="header-actions">
+        <a href="/admin" class="btn btn-ghost">Panel principal</a>
+        <button class="btn btn-ghost" id="logout-btn" hidden>Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main id="login-view" class="card center">
+      <h2>Acceso de administración</h2>
+      <p>Ingresá la contraseña configurada en <code>ADMIN_EXEMPT_PASSWORD</code>.</p>
+      <form id="login-form" class="exempt-login-form">
+        <label>Contraseña
+          <input type="password" id="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+        <p id="login-error" class="exempt-error" hidden></p>
+      </form>
+    </main>
+
+    <main id="panel-view" hidden>
+      <section class="card">
+        <h2>Agregar tienda exenta</h2>
+        <form id="add-form" class="exempt-add-form">
+          <label>ID Tiendanube
+            <input type="number" id="store-id-input" min="1" step="1" placeholder="Ej. 6125057" required>
+          </label>
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+        <p id="add-status" class="save-status"></p>
+      </section>
+
+      <section class="card">
+        <div class="section-header">
+          <h2>Tiendas exentas <span class="badge" id="store-count">0</span></h2>
+        </div>
+        <div id="stores-empty" class="exempt-empty" hidden>No hay tiendas exentas.</div>
+        <ul id="stores-list" class="exempt-list"></ul>
+      </section>
+
+      <footer class="admin-footer">
+        <a href="/privacy">Política de privacidad</a>
+        <span aria-hidden="true">·</span>
+        <a href="/terms">Términos y condiciones</a>
+        <span aria-hidden="true">·</span>
+        <a href="/help">Ayuda</a>
+      </footer>
+    </main>
+  </div>
+
+  <script src="/admin/exempt/js/exempt.js"></script>
+</body>
+</html>

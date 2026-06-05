@@ -62,6 +62,8 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   appUrl: process.env.APP_URL || 'http://localhost:3000',
   sessionSecret: process.env.SESSION_SECRET || 'dev-secret-change-me',
+  /** Contraseña del panel /admin/exempt (gestión de tiendas exentas de pago) */
+  adminExemptPassword: process.env.ADMIN_EXEMPT_PASSWORD || null,
   databaseUrl,
   tiendanube: {
     appId: process.env.TIENDANUBE_APP_ID || '33285',
