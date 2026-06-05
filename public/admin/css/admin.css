@@ -199,6 +199,27 @@ input[type="color"] {
 
 .preview-card { background: #f1f5f9; }
 
+.admin-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  margin-top: 8px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.admin-footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.admin-footer a:hover {
+  color: var(--primary);
+}
+
 @media (max-width: 900px) {
   .level-row {
     grid-template-columns: 1fr 1fr;

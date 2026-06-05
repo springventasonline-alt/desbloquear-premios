@@ -61,6 +61,14 @@ export function createApp() {
     res.sendFile(path.join(publicDir, 'help', 'index.html'));
   });
 
+  app.get('/privacy', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'privacy', 'index.html'));
+  });
+
+  app.get('/terms', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'terms', 'index.html'));
+  });
+
   app.use('/auth', authRoutes);
   app.use('/admin/api', adminRoutes);
   app.use('/api', apiRoutes);
