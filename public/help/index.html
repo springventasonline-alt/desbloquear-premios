@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desbloquear Premios — Ayuda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/help/css/help.css">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div>
+        <h1>Centro de ayuda</h1>
+        <p class="subtitle">Preguntas frecuentes sobre Desbloquear Premios</p>
+      </div>
+      <div class="header-actions">
+        <a href="/admin" class="btn btn-ghost">Ir al panel</a>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>¿En qué te podemos ayudar?</h2>
+      <p class="intro">Acá encontrás respuestas a los problemas más comunes. Si algo no queda claro, escribinos — pero antes probá los pasos de cada sección, que en la mayoría de los casos alcanza.</p>
+      <ul class="toc">
+        <li><a href="#faq-barra">Barra no aparece</a></li>
+        <li><a href="#faq-chips">Chips sin monto</a></li>
+        <li><a href="#faq-niveles">Niveles de premios</a></li>
+        <li><a href="#faq-colores">Colores y textos</a></li>
+        <li><a href="#faq-tiempo">Tiempo de cambios</a></li>
+        <li><a href="#faq-lugar">Barra mal ubicada</a></li>
+        <li><a href="#faq-tema">Compatibilidad tema</a></li>
+        <li><a href="#faq-desinstalar">Desinstalar</a></li>
+        <li><a href="#faq-datos">Datos al desinstalar</a></li>
+        <li><a href="#faq-contacto">Contacto</a></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <div class="faq-list">
+
+        <details class="faq-item" id="faq-barra">
+          <summary>La barra no aparece en el carrito</summary>
+          <div class="faq-body">
+            <p>Revisá estos puntos en orden:</p>
+            <ol>
+              <li><strong>App activa:</strong> en el panel, la opción «Barra de premios activa» tiene que estar prendida.</li>
+              <li><strong>Mostrar en carrito:</strong> verificá que «Mostrar en carrito» esté habilitado (la barra no se muestra en checkout salvo que lo actives aparte).</li>
+              <li><strong>Script instalado:</strong> en «Tu tienda», el estado del script debe decir instalado. Si no, usá «Reinstalar widget».</li>
+              <li><strong>Productos en el carrito:</strong> abrí el carrito con al menos un producto agregado — la barra se monta cuando hay contenido.</li>
+              <li><strong>Caché del navegador:</strong> probá en una ventana de incógnito o forzá recarga (Ctrl+Shift+R / Cmd+Shift+R).</li>
+              <li><strong>Widgets viejos:</strong> si tenías otra barra de regalos instalada manualmente en el tema, puede generar conflictos. Revisá Diseño → Editar código en Tiendanube.</li>
+            </ol>
+            <p class="faq-tip">Si después de estos pasos seguís sin verla, contanos el nombre de tu tienda y si usás carrito lateral o página de carrito — pero primero probá reinstalar el widget y abrir en incógnito.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-chips">
+          <summary>Los chips no muestran el monto</summary>
+          <div class="faq-body">
+            <p>Cada chip muestra el título del premio y el monto mínimo (por ejemplo: «Envío gratis · $5.000»). Si ves solo el título:</p>
+            <ul>
+              <li>Revisá que cada nivel tenga un <strong>monto mínimo</strong> mayor a cero en el panel.</li>
+              <li>Guardá la configuración y esperá hasta un minuto para que se actualice en la tienda.</li>
+              <li>Si el título del nivel ya incluye un signo $ al final, el widget lo limpia automáticamente para no duplicar el monto.</li>
+              <li>En pantallas muy chicas los chips se reorganizan en dos columnas; el monto sigue debajo del ícono en texto más pequeño.</li>
+            </ul>
+            <p class="faq-tip">Antes de escribirnos, guardá de nuevo los niveles con montos definidos y refrescá el carrito en incógnito — suele resolverlo al toque.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-niveles">
+          <summary>¿Cómo configuro los niveles de premios?</summary>
+          <div class="faq-body">
+            <p>En el panel, sección <strong>Niveles de premios</strong>:</p>
+            <ol>
+              <li>Podés tener hasta <strong>6 niveles</strong>. Cada uno tiene ícono, título, monto mínimo y tipo de premio.</li>
+              <li>El <strong>monto mínimo</strong> es el subtotal del carrito necesario para desbloquear ese nivel (en pesos).</li>
+              <li>El <strong>tipo</strong> puede ser envío gratis, descuento %, descuento fijo, regalo o personalizado — es informativo para el cliente en la barra.</li>
+              <li>Usá «+ Agregar nivel» para sumar más. El orden importa: van de menor a mayor monto.</li>
+              <li>Cuando termines, hacé clic en <strong>Guardar configuración</strong>.</li>
+            </ol>
+            <p>La vista previa del panel te muestra cómo quedará antes de publicar.</p>
+            <p class="faq-tip">Si tenés dudas con los montos, jugá con la vista previa y guardá — solo escribinos si algo no coincide con lo que ves en tu tienda.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-colores">
+          <summary>¿Cómo cambio colores y textos?</summary>
+          <div class="faq-body">
+            <p>Todo se configura desde el panel, sin tocar código del tema:</p>
+            <ul>
+              <li><strong>Apariencia:</strong> color principal, secundario, acento, texto y tipografía.</li>
+              <li><strong>Textos:</strong> título de la barra, mensaje de progreso, mensaje al desbloquear y mensaje cuando se desbloquean todos.</li>
+            </ul>
+            <p>En los textos podés usar variables:</p>
+            <ul>
+              <li><code>{{amount}}</code> — monto que falta para el próximo premio</li>
+              <li><code>{{reward}}</code> — nombre del próximo premio</li>
+            </ul>
+            <p>Ejemplo de progreso: «Agregá {{amount}} más para {{reward}}».</p>
+            <p class="faq-tip">Probá distintas combinaciones en la vista previa y guardá — la mayoría de los ajustes visuales se resuelven sin necesidad de contactar soporte.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-tiempo">
+          <summary>¿Cuánto tarda en verse el cambio después de guardar?</summary>
+          <div class="faq-body">
+            <p>Al guardar en el panel, los cambios se aplican de inmediato en nuestro servidor. En tu tienda pueden tardar un poco más por caché:</p>
+            <ul>
+              <li>La configuración del widget se cachea hasta <strong>60 segundos</strong> en el navegador del cliente.</li>
+              <li>En la práctica, los cambios suelen verse en <strong>1 a 2 minutos</strong>.</li>
+              <li>Para verificar al instante, abrí el carrito en <strong>incógnito</strong> o recargá forzando (Ctrl+Shift+R).</li>
+            </ul>
+            <p class="faq-tip">Dale un minutito, probá en incógnito, y recién ahí si no cambió nada escribinos con el horario en que guardaste.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-lugar">
+          <summary>La barra aparece en un lugar equivocado</summary>
+          <div class="faq-body">
+            <p>El widget busca automáticamente el mejor lugar dentro del carrito: cerca de los totales, debajo de los ítems o bajo el título «Carrito». No hace falta editar el tema.</p>
+            <p>Si la posición no te convence:</p>
+            <ul>
+              <li>Algunos temas personalizados tienen estructuras de carrito distintas (drawer lateral vs. página completa). La barra se adapta, pero la ubicación exacta puede variar.</li>
+              <li>Widgets o scripts viejos en el mismo contenedor pueden desplazar la barra. Revisá si hay código manual de otra app de regalos.</li>
+              <li>Reinstalá el widget desde el panel para asegurarte de que el script esté actualizado.</li>
+            </ul>
+            <p class="faq-tip">Antes de contactarnos, mandanos una captura del carrito (con y sin productos) y contanos si es drawer o página — así vemos si hace falta ajustar algo.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-tema">
+          <summary>¿Es compatible con mi tema de Tiendanube?</summary>
+          <div class="faq-body">
+            <p>Sí. Desbloquear Premios funciona con los temas oficiales de Tiendanube y la mayoría de los personalizados, porque:</p>
+            <ul>
+              <li>El script se instala vía Tiendanube (no editás <code>theme.liquid</code> ni archivos del tema).</li>
+              <li>La barra se inyecta en el DOM del carrito usando los selectores estándar de la plataforma.</li>
+              <li>Los colores se adaptan automáticamente para mantener buen contraste sobre fondos claros u oscuros del carrito.</li>
+            </ul>
+            <p>Si tu tema tiene un carrito muy customizado, la barra igual debería aparecer — quizás en una posición ligeramente distinta.</p>
+            <p class="faq-tip">Probá en tu tienda real con un producto en el carrito; si algo se ve raro, contanos qué tema usás y te orientamos antes de que nos escribas.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-reinstalar">
+          <summary>¿Cómo reinstalo el widget si dejó de funcionar?</summary>
+          <div class="faq-body">
+            <p>En el panel, sección <strong>Tu tienda</strong>, hacé clic en <strong>Reinstalar widget</strong>. Esto vuelve a activar el script de Tiendanube en tu tienda.</p>
+            <p>Después:</p>
+            <ol>
+              <li>Esperá unos segundos y abrí el carrito en incógnito.</li>
+              <li>Verificá que «Barra de premios activa» y «Mostrar en carrito» estén prendidos.</li>
+            </ol>
+            <p class="faq-tip">En la gran mayoría de los casos, reinstalar + incógnito alcanza — probalo y recién si persiste el problema escribinos.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-desinstalar">
+          <summary>¿Cómo desinstalo la app?</summary>
+          <div class="faq-body">
+            <p>Desde el admin de Tiendanube:</p>
+            <ol>
+              <li>Andá a <strong>Mi tienda → Aplicaciones</strong> (o Tienda de aplicaciones).</li>
+              <li>Buscá <strong>Desbloquear Premios</strong>.</li>
+              <li>Hacé clic en <strong>Desinstalar</strong> o <strong>Eliminar</strong>.</li>
+            </ol>
+            <p>Tiendanube revoca el acceso OAuth, quita el script de tu tienda y envía un aviso a nuestra app. La barra deja de mostrarse en el carrito de forma automática.</p>
+            <p class="faq-tip">Si la barra sigue visible después de desinstalar, limpiá caché o probá en incógnito — y si aún así aparece, avisanos con el nombre de la tienda.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-datos">
+          <summary>¿Qué pasa con mis datos si desinstalo?</summary>
+          <div class="faq-body">
+            <p>Al desinstalar:</p>
+            <ul>
+              <li>Tiendanube deja de inyectar el script — la barra desaparece del carrito.</li>
+              <li>Nuestra app marca tu tienda como desinstalada y deja de servir configuración al widget.</li>
+              <li>Recibimos los webhooks de privacidad de Tiendanube (<code>app/uninstalled</code>, <code>store/redact</code>) para cumplir con GDPR.</li>
+              <li>Tu configuración de premios queda registrada en nuestro sistema con fecha de desinstalación, pero <strong>no se usa</strong> mientras la app no esté activa.</li>
+            </ul>
+            <p>Si reinstalás la app más adelante, podés volver a configurar todo desde cero conectando de nuevo tu tienda.</p>
+            <p class="faq-tip">Para consultas sobre eliminación de datos personales, escribinos a soporte — pero si solo querés dejar de usar la barra, desinstalar desde Tiendanube es suficiente.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-checkout">
+          <summary>¿La barra se muestra en el checkout?</summary>
+          <div class="faq-body">
+            <p>Por defecto la barra aparece en el <strong>carrito</strong> (drawer o página). El checkout es opcional:</p>
+            <ul>
+              <li>En el panel, activá <strong>Mostrar en checkout</strong> si querés que también aparezca ahí.</li>
+              <li>Algunos checkouts de Tiendanube tienen menos espacio; la barra se adapta al ancho disponible.</li>
+            </ul>
+            <p class="faq-tip">Si no la ves en checkout, revisá primero que la opción esté activa y guardá — en general no hace falta escribirnos.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-variables">
+          <summary>Los textos muestran {{amount}} literal en vez del monto</summary>
+          <div class="faq-body">
+            <p>Las variables <code>{{amount}}</code> y <code>{{reward}}</code> se reemplazan automáticamente en la barra del carrito. Si ves el texto literal:</p>
+            <ul>
+              <li>Verificá que escribiste las variables exactamente así, con doble llave.</li>
+              <li>Guardá la configuración y esperá hasta un minuto.</li>
+              <li>En la <strong>vista previa del panel</strong> las variables pueden verse sin reemplazar — eso es normal; en la tienda sí se interpolan.</li>
+            </ul>
+            <p class="faq-tip">Probá el texto sugerido «Agregá {{amount}} más para {{reward}}», guardá y mirá el carrito en incógnito antes de contactar soporte.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section class="card contact-card" id="faq-contacto">
+      <h2>¿Necesitás más ayuda?</h2>
+      <p>Escribinos a <a href="mailto:paloma.ucasal@gmail.com">paloma.ucasal@gmail.com</a></p>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-top: 12px;">
+        Incluí el nombre de tu tienda, una captura del carrito y qué pasos ya probaste. Respondemos lo antes posible.
+      </p>
+    </section>
+  </div>
+</body>
+</html>
