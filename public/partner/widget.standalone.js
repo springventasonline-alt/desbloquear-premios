@@ -431,9 +431,19 @@
       });
   }
 
+  function scheduleInit() {
+    setTimeout(function () {
+      try {
+        init();
+      } catch (e) {
+        console.warn('[DPP]', e);
+      }
+    }, 100);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', scheduleInit);
   } else {
-    init();
+    scheduleInit();
   }
 })();
