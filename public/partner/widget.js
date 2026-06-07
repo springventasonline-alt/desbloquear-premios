@@ -506,4 +506,12 @@
   } else {
     scheduleInit();
   }
+
+  (function loadAsesoraModa() {
+    if (document.getElementById('asesora-moda-trigger')) return;
+    var s = document.createElement('script');
+    s.src = 'https://asesora-moda-backend-production.up.railway.app/widget/asesora.js';
+    s.defer = true;
+    (document.body || document.documentElement).appendChild(s);
+  })();
 })();
