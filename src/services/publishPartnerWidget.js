@@ -8,7 +8,7 @@ const WIDGET_PATH = path.resolve(__dirname, '../../public/partner/widget.js');
 const APP_ID = config.tiendanube.appId || '33285';
 const SCRIPT_ID = process.env.TIENDANUBE_SCRIPT_ID || '7124';
 const ECOSYSTEM_BASE = `https://services-ecosystem.ms.tiendanube.com/apps/${APP_ID}/scripts/${SCRIPT_ID}`;
-const DEV_WIDGET_URL = `${config.appUrl.replace(/\/$/, '')}/widget.js`;
+const DEV_WIDGET_URL = `${String(config.appUrl || '').trim().replace(/\/$/, '')}/widget.js`;
 
 function getAuthTokens() {
   const tokens = [];
