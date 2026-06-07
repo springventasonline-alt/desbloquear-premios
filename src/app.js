@@ -12,6 +12,7 @@ import adminExemptRoutes from './routes/adminExempt.js';
 import apiRoutes from './routes/api.js';
 import webhookRoutes from './routes/webhooks.js';
 import widgetRoutes from './routes/widget.js';
+import setupRoutes from './routes/setup.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -78,6 +79,7 @@ export function createApp() {
   app.use('/admin/api/exempt', adminExemptRoutes);
   app.use('/admin/api', adminRoutes);
   app.use('/api', apiRoutes);
+  app.use('/setup', setupRoutes);
   app.use('/webhooks', webhookRoutes);
 
   app.use(notFoundHandler);
