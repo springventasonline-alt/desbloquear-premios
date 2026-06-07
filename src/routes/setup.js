@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { findStoreByTiendanubeId } from '../models/store.js';
 import { listStoreScripts } from '../services/tiendanubeApi.js';
 import {
+  enablePartnerWidgetDevMode,
   getPublishCapabilities,
   publishPartnerWidget,
 } from '../services/publishPartnerWidget.js';
@@ -61,6 +62,16 @@ router.post('/publish-widget', async (req, res, next) => {
     const install = req.query.install !== 'false';
     const devMode = req.query.dev_mode !== 'false';
     const result = await publishPartnerWidget({ install, devMode });
+    res.status(result.ok ? 200 : 502).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/enable-dev-mode', async (req, res, next) => {
+  try {
+    if (!assertSetupKey(req, res)) return;
+    const result = await enablePartnerWidgetDevMode();
     res.status(result.ok ? 200 : 502).json(result);
   } catch (error) {
     next(error);
