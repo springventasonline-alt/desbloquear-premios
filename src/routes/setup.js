@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { findStoreByTiendanubeId } from '../models/store.js';
 import { listStoreScripts } from '../services/tiendanubeApi.js';
+import {
+  getPublishCapabilities,
+  publishPartnerWidget,
+} from '../services/publishPartnerWidget.js';
 
 const router = Router();
 const SETUP_KEY = (process.env.SETUP_KEY || 'springdemo-7793118-setup').trim();
@@ -41,6 +45,23 @@ router.get('/scripts/:storeId', async (req, res, next) => {
     }
     const scripts = await listStoreScripts(String(store.tiendanube_store_id), store.access_token);
     res.json({ store_id: String(store.tiendanube_store_id), scripts });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/publish-status', (req, res) => {
+  if (!assertSetupKey(req, res)) return;
+  res.json(getPublishCapabilities());
+});
+
+router.post('/publish-widget', async (req, res, next) => {
+  try {
+    if (!assertSetupKey(req, res)) return;
+    const install = req.query.install !== 'false';
+    const devMode = req.query.dev_mode !== 'false';
+    const result = await publishPartnerWidget({ install, devMode });
+    res.status(result.ok ? 200 : 502).json(result);
   } catch (error) {
     next(error);
   }
