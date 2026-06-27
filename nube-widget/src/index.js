@@ -15,7 +15,57 @@ function computeProgress(subtotal, levels) {
   return { unlocked, next, percent };
 }
 
-function buildUI(cfg, subtotal) {
+// Cupones ya generados en esta sesión — evita llamadas repetidas
+const couponCache = {};
+
+async function getCoupon(storeId, levelId, rewardType, rewardValue) {
+  const key = `${storeId}-${levelId}`;
+  if (couponCache[key]) return couponCache[key];
+
+  try {
+    const res = await fetch(`${APP_BASE}/api/coupon`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        store_id: storeId,
+        reward_type: rewardType,
+        reward_value: rewardValue,
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    couponCache[key] = data.code;
+    return data.code;
+  } catch {
+    return null;
+  }
+}
+
+function buildCouponBox(code, cfg) {
+  return box({
+    background: cfg.colors.accent + '18',
+    border: `1px solid ${cfg.colors.accent}`,
+    borderRadius: '8px',
+    padding: '10px 14px',
+    marginTop: '8px',
+    children: [
+      txt({ children: '🎉 ¡Premio desbloqueado! Usá este cupón:', fontSize: '13px', fontWeight: '600', display: 'block', marginBottom: '6px' }),
+      box({
+        background: '#fff',
+        border: `2px dashed ${cfg.colors.accent}`,
+        borderRadius: '6px',
+        padding: '8px 12px',
+        textAlign: 'center',
+        children: [
+          txt({ children: code, fontSize: '18px', fontWeight: '700', letterSpacing: '2px', color: cfg.colors.primary }),
+        ],
+      }),
+      txt({ children: 'Copiá el código y aplicalo en el checkout.', fontSize: '11px', marginTop: '6px', display: 'block', opacity: '0.7' }),
+    ],
+  });
+}
+
+function buildUI(cfg, subtotal, activeCoupons) {
   const { unlocked, next, percent } = computeProgress(subtotal, cfg.levels);
   const allUnlocked = unlocked.length === cfg.levels.length;
 
@@ -48,6 +98,11 @@ function buildUI(cfg, subtotal) {
       });
     });
 
+  // Cupones activos para mostrar
+  const couponBoxes = Object.entries(activeCoupons).map(([, code]) =>
+    buildCouponBox(code, cfg)
+  );
+
   return box({
     fontFamily: cfg.typography?.fontFamily ?? 'sans-serif',
     margin: '12px 0',
@@ -74,12 +129,8 @@ function buildUI(cfg, subtotal) {
             ],
           }),
           txt({ children: message, fontSize: '13px', marginTop: '10px', lineHeight: '1.4', display: 'block' }),
-          row({
-            gap: '8px',
-            marginTop: '12px',
-            flexWrap: 'wrap',
-            children: levelItems,
-          }),
+          row({ gap: '8px', marginTop: '12px', flexWrap: 'wrap', children: levelItems }),
+          ...couponBoxes,
         ],
       }),
     ],
@@ -96,25 +147,45 @@ export function App(nube) {
   }
 
   let cfg = null;
+  const activeCoupons = {};
+
+  async function checkAndGenerateCoupons(subtotal) {
+    if (!cfg) return;
+    const sorted = [...cfg.levels].sort((a, b) => a.order - b.order);
+    for (const level of sorted) {
+      if (
+        subtotal >= level.threshold &&
+        (level.rewardType === 'free_shipping' || level.rewardType === 'percentage_discount') &&
+        !activeCoupons[level.id]
+      ) {
+        const code = await getCoupon(storeId, level.id, level.rewardType, level.rewardValue);
+        if (code) {
+          activeCoupons[level.id] = code;
+        }
+      }
+    }
+  }
 
   fetch(`${APP_BASE}/api/widget/${storeId}`)
     .then((r) => {
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       return r.json();
     })
-    .then((data) => {
+    .then(async (data) => {
       if (!data?.enabled) return;
       cfg = data;
 
       const currentState = nube.getState();
       const subtotal = (currentState?.cart?.prices?.subtotal ?? 0) / 100;
 
-      nube.render('before_start_checkout_button', () => buildUI(cfg, subtotal));
+      await checkAndGenerateCoupons(subtotal);
+      nube.render('before_start_checkout_button', () => buildUI(cfg, subtotal, { ...activeCoupons }));
 
-      nube.on('cart:update', ({ cart }) => {
+      nube.on('cart:update', async ({ cart }) => {
         if (!cfg) return;
         const total = (cart?.prices?.subtotal ?? 0) / 100;
-        nube.render('before_start_checkout_button', () => buildUI(cfg, total));
+        await checkAndGenerateCoupons(total);
+        nube.render('before_start_checkout_button', () => buildUI(cfg, total, { ...activeCoupons }));
       });
     })
     .catch((err) => {
